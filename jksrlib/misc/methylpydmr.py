@@ -37,3 +37,6 @@ class MethylPyDMR:
 
     def hypo_bed(self, sample):
         return self.bed3[self.hyp_df[sample]<0]
+
+    def hyper_bed(self, sample):
+        return self.bed3[self.hyp_df[sample]>0]

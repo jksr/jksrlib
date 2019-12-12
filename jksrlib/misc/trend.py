@@ -7,8 +7,8 @@ def is_binarizable(array, diff_thresh=None, bin_thresh=None):
     within = np.empty(between.shape)
     
     for i in range(len(_array)-1):
-        #within[i] = max( np.ptp(_array[:i+1]), np.ptp(_array[i+1:]) )
-        within[i] = np.ptp(_array[:i+1]) + np.ptp(_array[i+1:])
+        within[i] = max( np.ptp(_array[:i+1]), np.ptp(_array[i+1:]) )
+        #within[i] = np.ptp(_array[:i+1]) + np.ptp(_array[i+1:])
     
     _binarizability = between / within
     binary_diff = between[ np.argmax(_binarizability) ]
