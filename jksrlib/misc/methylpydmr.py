@@ -1,18 +1,36 @@
 import pandas as pd
+import numpy as np
 
 class MethylPyDMR:
     
     def __init__(self, dmrfn):
         self.df = pd.read_csv(dmrfn, sep='\t')
+        self._correct_methylpy()
+
         self.bed3 = self.df[self.df.columns[:3]]
         self.head = self.df[self.df.columns[:4]]
         self.samples = self.df.columns[ self.df.columns.str.startswith('methylation_level_') ]\
                             .str.replace('methylation_level_','').to_list()
         self.methyl_level_df = None
-        self.methyl_level_df = self._methlv()
         self.hyp_df = None
+        self.stats = None
+
+
+        self.methyl_level_df = self._methlv()
         self.hyp_df = self._hyp()
+        self.stats = self._basic_stats()
+
+    def _basic_stats(self):
+        stats = self.head.copy()
+        stats['len'] = stats['end'] - stats['start']
+        stats['methylation_level_diff'] = self.methyl_level_df[self.samples].apply(np.ptp,axis=1)
+        return stats
         
+    def _correct_methylpy(self):
+        self.df.rename(columns={'#chr':'chr'}, inplace=True)
+        self.df.set_index(self.df.apply(lambda x:f"{x['chr']}:{x['start']}-{x['end']}", axis=1), inplace=True)
+        self.df['end']+=1
+
     def _methlv(self):
         if self.methyl_level_df is None:
             methlv = self.df[ self.df.columns[self.df.columns.str.startswith('methylation_level_')] ]
