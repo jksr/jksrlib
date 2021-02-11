@@ -3,9 +3,9 @@ import numpy as np
 
 class MethylPyDMR:
     
-    def __init__(self, dmrfn):
+    def __init__(self, dmrfn, id_prefix=''):
         self.df = pd.read_csv(dmrfn, sep='\t')
-        self._correct_methylpy()
+        self._correct_methylpy(id_prefix)
 
         self.bed3 = self.df[self.df.columns[:3]]
         self.head = self.df[self.df.columns[:4]]
@@ -26,9 +26,10 @@ class MethylPyDMR:
         stats['methylation_level_diff'] = self.methyl_level_df[self.samples].apply(np.ptp,axis=1)
         return stats
         
-    def _correct_methylpy(self):
+    def _correct_methylpy(self, id_prefix):
         self.df.rename(columns={'#chr':'chr'}, inplace=True)
-        self.df.set_index(self.df.apply(lambda x:f"{x['chr']}:{x['start']}-{x['end']}", axis=1), inplace=True)
+        #self.df.set_index(self.df.apply(lambda x:f"{x['chr']}:{x['start']}-{x['end']}", axis=1), inplace=True)
+        self.df.set_index(self.df.index.map(lambda x:f'{id_prefix}_{x}'), inplace=True)
         self.df['end']+=1
 
     def _methlv(self):
