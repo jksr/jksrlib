@@ -3,7 +3,7 @@ import pybedtools
 from pybedtools.helpers import cleanup as pbtcleanup
 
 class LoopRegion:
-    def __init__(self, loopfn, reg1fn, reg2fn, loopid_col=None, reg1id_col=None, reg2id_col=None):
+    def __init__(self, loopfn, regfn1, regfn2, loopid_col=None, reg1id_col=None, reg2id_col=None):
         reg1col = [0,1,2]
         if reg1id_col is not None:
             reg1col.append(reg1id_col)
